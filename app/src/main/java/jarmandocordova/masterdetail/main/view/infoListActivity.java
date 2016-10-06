@@ -47,13 +47,13 @@ public class infoListActivity extends AppCompatActivity {
     private boolean mTwoPane;
     private MainGateway mainGateway = new MainGateway();
     private SimpleItemRecyclerViewAdapter mAdapter;
+    private SimpleSectionedRVAdapter mSectionedAdapter;
+    private View recyclerView;
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
         super.onResume();
-        final View recyclerView = findViewById(R.id.info_list);
         assert recyclerView != null;
-
         mainGateway.getData()
                 .map(new Func1<Data, Pair<List<Item>, Integer>>() {
                     @Override
@@ -143,6 +143,8 @@ public class infoListActivity extends AppCompatActivity {
         });
 
 
+        recyclerView = findViewById(R.id.info_list);
+
         if (findViewById(R.id.info_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
@@ -167,7 +169,7 @@ public class infoListActivity extends AppCompatActivity {
 
         //Add your adapter to the sectionAdapter
         SimpleSectionedRVAdapter.Section[] dummy = new SimpleSectionedRVAdapter.Section[sections.size()];
-        SimpleSectionedRVAdapter mSectionedAdapter = new
+        mSectionedAdapter = new
                 SimpleSectionedRVAdapter(this, R.layout.section, R.id.section_text, mAdapter);
         mSectionedAdapter.setSections(sections.toArray(dummy));
 
