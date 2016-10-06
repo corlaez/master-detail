@@ -47,7 +47,7 @@ public class MainGateway {
                 }).onErrorReturn(new Func1<Throwable, Data>() {
                     @Override
                     public Data call(Throwable throwable) {
-                        Log.d("MainGApiError", throwable.getMessage());
+                        Log.d("MainGApiError", ""+throwable.getMessage());
                         Log.d("MainGCacheFallback", "Fetching data stored in db");
                         return localCache.read(LocalCache.LAST_BELATRIX_DATA, new Data());
                     }

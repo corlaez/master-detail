@@ -43,10 +43,19 @@ dependencies {
 
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.2.1'
+
+    /* old networking
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta1'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta1'
-    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta1'
+    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta1'*/
+
+    //http://stackoverflow.com/questions/32514410/logging-with-retrofit-2
+    //compile 'com.squareup.okhttp3:okhttp:3.4.1'//http://stackoverflow.com/questions/38604235/okhttpclient-broken-after-updated-retrofit-to-retrofit-2
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     // Injection
     //dagger
     compile 'javax.annotation:jsr250-api:1.0'

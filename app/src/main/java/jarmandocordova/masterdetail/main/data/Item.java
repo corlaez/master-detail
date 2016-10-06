@@ -14,6 +14,10 @@ public class Item {
         this.details = details;
     }
 
+    public boolean noContentNorDetail() {
+        return (content == null || content.equals("")) && (content == null || details.equals(""));
+    }
+
     @Override
     public String toString() {
         return "Item{" +

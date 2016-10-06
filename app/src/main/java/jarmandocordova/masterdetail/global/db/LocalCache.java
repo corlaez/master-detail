@@ -6,6 +6,7 @@ package jarmandocordova.masterdetail.global.db;
 
 public interface LocalCache {
     String LAST_BELATRIX_DATA = "LAST_BELATRIX_DATA";
+    String LAST_ITEM_CLICKED = "LAST_ITEM_CLICKED";
 
     <T> void save(String key, T t);
 

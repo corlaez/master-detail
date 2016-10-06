@@ -28,6 +28,7 @@ import jarmandocordova.masterdetail.main.data.MainGateway;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * An activity representing a list of infos. This activity
@@ -50,42 +51,8 @@ public class infoListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_list);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Delete Cache?", Snackbar.LENGTH_LONG)
-                        .setAction("Delete", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mainGateway.deleteCache();
-                                Toast.makeText(infoListActivity.this, "Cache deleted", Toast.LENGTH_SHORT).show();
-                            }
-                        }).show();
-            }
-        });
-
         final View recyclerView = findViewById(R.id.info_list);
         assert recyclerView != null;
-
-        if (findViewById(R.id.info_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
 
         mainGateway.getData()
                 .map(new Func1<Data, Pair<List<Item>, Integer>>() {
@@ -113,7 +80,8 @@ public class infoListActivity extends AppCompatActivity {
                         return new Pair<>(list, data.getMetric().size());
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Pair<List<Item>, Integer>>() {
                     @Override
                     public void onCompleted() {
@@ -132,13 +100,58 @@ public class infoListActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                boolean first4NoData = true;
+                                for (int i = 0; i < 4; i++ ){
+                                    Item it = pair.first.get(i);
+                                    if(!it.noContentNorDetail()){
+                                        first4NoData = false;
+                                        break;
+                                    }
+                                }
+                                if(pair.first.size() < 5 && first4NoData){
+                                    Toast.makeText(infoListActivity.this, "Couldn't connect to server, nothing on cache. =(", Toast.LENGTH_SHORT).show();
+                                }
                                 setupRecyclerView((RecyclerView) recyclerView, pair.first, pair.second);
                             }
                         });
                     }
                 });
     }
-//DummyContent.ITEMS
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_info_list);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getTitle());
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Delete Cache?", Snackbar.LENGTH_LONG)
+                        .setAction("Delete", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mainGateway.deleteCache();
+                                Toast.makeText(infoListActivity.this, "Cache deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
+            }
+        });
+
+
+        if (findViewById(R.id.info_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+    }
+
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Item> items, int metricsCount) {
         // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
 

@@ -1,5 +1,6 @@
 package jarmandocordova.masterdetail.global.di.component;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -15,6 +16,7 @@ import jarmandocordova.masterdetail.global.di.module.NetworkModule;
 @Singleton
 @Component(modules = {LocalCacheModule.class, NetworkModule.class, ApiModule.class})
 public interface BaseComponent {
+    @Named("belatrixsf.api")
     BelatrixsfApi getBelatrixsfApi();
     LocalCache getLocalCache();
 }
